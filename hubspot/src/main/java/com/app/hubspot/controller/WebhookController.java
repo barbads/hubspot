@@ -1,5 +1,6 @@
 package com.app.hubspot.controller;
 
+import com.app.hubspot.dto.TokenResponseDTO;
 import com.app.hubspot.models.Contact;
 import com.app.hubspot.service.WebhookService;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class WebhookController {
      * @return ResponseEntity with status and echo of received data
      */
     @PostMapping("/receive")
-    public ResponseEntity<Contact> receiveJson(@RequestBody RequestBody requestBody) throws Exception {
+    public ResponseEntity<Contact> receiveJson(@RequestBody TokenResponseDTO requestBody) throws Exception {
         // Log or process the received JSON data
         System.out.println("Received JSON data: " + requestBody.getClass());
 
