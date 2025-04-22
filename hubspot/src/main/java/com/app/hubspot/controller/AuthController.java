@@ -1,8 +1,9 @@
 package com.app.hubspot.controller;
 
 import com.app.hubspot.config.OAuth2Config;
-import com.app.hubspot.dto.TokenResponseDTO;
+import com.app.hubspot.models.TokenResponse;
 import com.app.hubspot.service.OAuthService;
+import com.app.hubspot.service.TokenResponseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class AuthController {
     
     @Autowired
     private OAuthService oAuthService;
+
+    @Autowired
+    private TokenResponseService tokenResponseService;
 
     /**
      * Endpoint para gerar a URL de autorização conforme documentação do HubSpot
@@ -48,12 +52,16 @@ public class AuthController {
      * @return ResponseEntity contendo o token de acesso
      */
     @GetMapping("/callback")
-    public ResponseEntity<TokenResponseDTO> processOAuthCallback(@RequestParam("code") String code) {
+    public ResponseEntity<TokenResponse> processOAuthCallback(@RequestParam("code") String code) {
         logger.info("Recebido código de autorização: {}", code);
         
         try {
-            TokenResponseDTO tokenResponseDto = oAuthService.exchangeCodeForToken(code);
-            return ResponseEntity.ok(tokenResponseDto);
+            TokenResponse tokenResponse = oAuthService.exchangeCodeForToken(code);
+
+            tokenResponseService.saveToken(tokenResponse);
+
+
+            return ResponseEntity.ok(tokenResponse);
         } catch (Exception e) {
             logger.error("Erro ao processar callback OAuth: {}", e.getMessage(), e);
             throw e;

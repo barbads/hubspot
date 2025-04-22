@@ -2,6 +2,7 @@ package com.app.hubspot.service;
 
 import com.app.hubspot.config.OAuth2Config;
 import com.app.hubspot.dto.TokenResponseDTO;
+import com.app.hubspot.models.TokenResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class OAuthService {
      * @param code O código de autorização recebido do HubSpot
      * @return O objeto TokenResponse com os tokens
      */
-    public TokenResponseDTO exchangeCodeForToken(String code) {
+    public TokenResponse exchangeCodeForToken(String code) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -42,11 +43,11 @@ public class OAuthService {
 
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(formParams, headers);
 
-        ResponseEntity<TokenResponseDTO> responseEntity = restTemplate.exchange(
+        ResponseEntity<TokenResponse> responseEntity = restTemplate.exchange(
                 oAuth2Config.getTokenUrl(),
                 HttpMethod.POST,
                 requestEntity,
-                TokenResponseDTO.class);
+                TokenResponse.class);
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             logger.info("Código trocado com sucesso por token de acesso");
