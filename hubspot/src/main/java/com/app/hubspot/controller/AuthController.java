@@ -27,7 +27,7 @@ public class AuthController {
      * 
      * @return A URL de autorização completa
      */
-    @GetMapping("/authorize")
+    @GetMapping("/generateUrl")
     public ResponseEntity<String> generateAuthorizationUrl() {
         try {
             String authUrl = oAuth2Config.getAuthorizationUrl();
