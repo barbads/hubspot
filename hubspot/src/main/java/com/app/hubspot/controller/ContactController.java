@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class ContactController {
 
@@ -27,6 +26,11 @@ public class ContactController {
     private final TokenResponseRepository tokenResponseRepository;
 
     private final ContactService contactService;
+
+    public ContactController(TokenResponseRepository tokenResponseRepository, ContactService contactService) {
+        this.tokenResponseRepository = tokenResponseRepository;
+        this.contactService = contactService;
+    }
 
     /**
      * Endpoint to receive any JSON object
@@ -41,26 +45,47 @@ public class ContactController {
         // Log or process the received JSON data
         System.out.println("Received JSON data: " + contact.getClass());
 
-        List<TokenResponse> tokens = tokenResponseRepository.findTokens(LocalDateTime.now());
+        List<TokenResponse> tokens = tokenResponseRepository.findTokens();
+        if (tokens.isEmpty()) {
+            logger.error("No tokens found in the database.");
+            return ResponseEntity.status(500).body("No tokens found in the database.");
+        }
 
-        contactService.createContact(contact, tokens.getFirst().getAccessToken());
+        List<TokenResponse> validTokens = tokens
+                .stream().filter(token -> token.getExpiresAt().isAfter(LocalDateTime.now())).toList();
 
-        // Return the received data as confirmation
-        return ResponseEntity.ok().build();
-    }
+        if (validTokens.isEmpty()) {
+            logger.error("No valid tokens found in the database.");
+            return ResponseEntity.status(500).body("No valid tokens found in the database. Create a new URL to generate a new valid token.");
+        }
 
-    @PostMapping("/contact/webhook")
-    public ResponseEntity webhookContact(@RequestBody ContactEvent contactEvent) throws Exception {
-        // Log or process the received JSON data
-        System.out.println("Received JSON data: " + contactEvent.getClass());
-
-
-
-        List<TokenResponse> tokens = tokenResponseRepository.findTokens(LocalDateTime.now());
-
-        //contactService.createContact(contact, tokens.getFirst().getAccessToken());
+        contactService.createContact(contact, validTokens.get(0).getAccessToken());
 
         // Return the received data as confirmation
         return ResponseEntity.ok().build();
     }
+
+//    @PostMapping("/contact/webhook")
+//    public ResponseEntity webhookContact(@RequestBody ContactEvent contactEvent) throws Exception {
+//        // Log or process the received JSON data
+//        System.out.println("Received JSON data: " + contactEvent.getClass());
+//
+//        List<TokenResponse> tokens = tokenResponseRepository.findTokens();
+//
+//        if (tokens.isEmpty()) {
+//            logger.error("No tokens found in the database.");
+//            return ResponseEntity.status(500).body("No tokens found in the database.");
+//        }
+//
+//        List<TokenResponse> validTokens = tokens
+//                .stream().filter(token -> token.getExpiresAt().isAfter(LocalDateTime.now())).toList();
+//
+//        if (validTokens.isEmpty()) {
+//            logger.error("No valid tokens found in the database.");
+//            return ResponseEntity.status(500).body("No valid tokens found in the database. Create a new URL to generate a new valid token.");
+//        }
+//
+//        // Return the received data as confirmation
+//        return ResponseEntity.ok().build();
+//    }
 }

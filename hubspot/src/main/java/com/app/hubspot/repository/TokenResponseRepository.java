@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 @Repository
 public interface TokenResponseRepository extends JpaRepository<TokenResponse, Long> {
 
-    @Query("SELECT t FROM TokenResponse t WHERE t.expiresAt > :now ORDER BY t.createdAt DESC")
-    List<TokenResponse> findTokens(@Param("now") LocalDateTime now);
+    @Query("SELECT t FROM TokenResponse t ORDER BY t.createdAt DESC")
+    List<TokenResponse> findTokens();
 
 }
 

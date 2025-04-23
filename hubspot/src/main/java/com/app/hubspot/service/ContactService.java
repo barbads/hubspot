@@ -53,10 +53,20 @@ public class ContactService {
             contact.setObjectId(response.getBody().getId());
             System.out.println("Contato criado com sucesso: " + response.getBody());
             saveContact(contact);
+            CreateContactResponseDTO createContactResponseDto = response.getBody();
+            update(createContactResponseDto);
         } else {
             System.err.println("Erro ao criar contato: " + response.getStatusCode() + " - " + response.getBody());
         }
 
+
+    }
+
+    public void update(CreateContactResponseDTO createContactResponseDTO) {
+        Contact contact = contactRepository.contatoPorObjectId(createContactResponseDTO.getId());
+        contact.setObjectId(createContactResponseDTO.getId());
+        contact.setSubscriptionStatus(Contact.SubscriptionStatus.CREATED);
+        contactRepository.save(contact);
     }
 
     private void saveContact(Contact contact) {

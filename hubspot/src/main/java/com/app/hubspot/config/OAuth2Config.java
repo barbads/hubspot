@@ -46,8 +46,6 @@ public class OAuth2Config {
         // Generate a random state for CSRF protection
         String state = UUID.randomUUID().toString();
 
-        System.out.println("PASSOU AQUI CARA");
-
 
         // Build the URL as per HubSpot documentation
         StringBuilder authUrlBuilder = new StringBuilder(authUrl);
@@ -60,8 +58,6 @@ public class OAuth2Config {
         
         // Always include response_type=code as required by OAuth 2.0 standard
         authUrlBuilder.append("&response_type=code");
-
-        System.out.println("PASSOU AQUI CARA");
 
         return authUrlBuilder.toString();
     }
