@@ -1,5 +1,6 @@
 package com.app.hubspot.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,18 +17,23 @@ public class TokenResponse {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonProperty("access_token")
     @Column(name = "access_token")
     private String accessToken;
 
+    @JsonProperty("refresh_token")
     @Column(name = "refresh_token")
     private String refreshToken;
 
+    @JsonProperty("token_type")
     @Column(name = "token_type")
     private String tokenType;
 
-    @Column(name = "expires_in")
+    @JsonProperty("expires_in")
+    @Transient
     private Long expiresIn;
 
+    @JsonProperty("created_at")
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
