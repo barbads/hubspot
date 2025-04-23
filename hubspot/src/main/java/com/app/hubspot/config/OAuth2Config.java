@@ -66,9 +66,7 @@ public class OAuth2Config {
         return authUrlBuilder.toString();
     }
     
-    /**
-     * Helper method to URL encode a string
-     */
+
     private String encode(String value) {
         return URLEncoder.encode(value, StandardCharsets.UTF_8);
     }

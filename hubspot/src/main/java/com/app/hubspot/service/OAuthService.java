@@ -1,7 +1,6 @@
 package com.app.hubspot.service;
 
 import com.app.hubspot.config.OAuth2Config;
-import com.app.hubspot.dto.TokenResponseDTO;
 import com.app.hubspot.models.TokenResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +29,12 @@ public class OAuthService {
      * @return O objeto TokenResponse com os tokens
      */
     public TokenResponse exchangeCodeForToken(String code) {
+        logger.info("Trocando código por token de acesso...");
+        logger.info("Código recebido: {}", code);
+
+        // Configuração do cabeçalho e corpo da requisição
+        // O HubSpot espera que o corpo da requisição esteja no formato application/x-www-form-urlencoded
+        // conforme a documentação da API.
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
